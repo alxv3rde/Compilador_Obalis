@@ -139,7 +139,7 @@
                                        Margin="-4,-7"
                                        Foreground="White"
                                        FontWeight="DemiBold" />
-                                <Label Content="Lenguaje Traducido"
+                                <Label Content="Consola"
                                        Margin="-2,-5"
                                        FontWeight="Medium"
                                        FontSize="12"
@@ -164,7 +164,6 @@
                                   Grid.Row="1" />
                             <avalonEdit:TextEditor Grid.Column="1"
                                                    x:Name="TranslatedEditor"
-                                                   ShowLineNumbers="True"
                                                    FontFamily="consolas"
                                                    FontSize="13"
                                                    Background="White"

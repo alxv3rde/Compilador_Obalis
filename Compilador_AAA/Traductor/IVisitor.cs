@@ -18,6 +18,7 @@ namespace Compilador_AAA.Traductor
 
         //Statements
         void Visit(IfStatement ifStatement);
+        void Visit(WhileStatement whileStatement);
         void Visit(Println println);
 
         //Expresions

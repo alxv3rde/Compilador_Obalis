@@ -60,11 +60,15 @@ namespace Compilador_AAA.Traductor
                 Advance();
                 return ParsePrintln(); // Agregar aquí
             }
-            else if (Check(TokenType.Keyword, new[] { "condicion" }))
+            else if (Check(TokenType.Keyword, new[] { "loop" }))
+            {
+                return ParseWhileStatement(); // Agregar aquí
+            }
+            else if (Check(TokenType.Keyword, new[] { "condition" }))
             {
                 return ParseIfStatement(); // Agregar aquí
             }
-            else if (Check(TokenType.Keyword, new[] { "integer", "boolean", "double", "string" }))
+            else if (Check(TokenType.Keyword, new[] { "int", "bool", "double", "string" }))
             {
                 return ParseVarDeclaration(true);
             }
@@ -202,11 +206,10 @@ namespace Compilador_AAA.Traductor
 
             return left; // Si no hay operador, retorna la expresión izquierda
         }
-
-        private IfStatement ParseIfStatement()
+        private WhileStatement ParseWhileStatement()
         {
-            Consume(TokenType.Keyword, "Se esperaba 'if'", "SIN010");
-            Consume(TokenType.OpenParen, "Se esperaba '(' después de 'if'", "SIN011");
+            Consume(TokenType.Keyword, "Se esperaba 'loop'", "SIN010");
+            Consume(TokenType.OpenParen, "Se esperaba '(' después de 'while'", "SIN011");
 
             Expr condition = (Expr)ParseLogicOR(); // Analiza la condición
 
@@ -227,9 +230,58 @@ namespace Compilador_AAA.Traductor
                 }
             }
 
-            Consume(TokenType.CloseBrace, "Se esperaba '}' al final del bloque 'if'", "SIN014");
+            Consume(TokenType.CloseBrace, "Se esperaba '}' al final del bloque 'loop'", "SIN014");
 
-            return new IfStatement(condition, thenBranch, null, _currentLine); // Retorna el if statement
+
+            return new WhileStatement(condition, thenBranch, _currentLine); // Retorna el if statement
+        }
+        private IfStatement ParseIfStatement()
+        {
+            Consume(TokenType.Keyword, "Se esperaba 'condition'", "SIN010");
+            Consume(TokenType.OpenParen, "Se esperaba '(' después de 'condition'", "SIN011");
+
+            Expr condition = (Expr)ParseLogicOR(); // Analiza la condición
+
+            Consume(TokenType.CloseParen, "Se esperaba ')' después de la condición", "SIN012");
+            Consume(TokenType.OpenBrace, "Se esperaba '{' después de la condición", "SIN013");
+
+            List<Stmt> thenBranch = new List<Stmt>();
+            while (!Check(TokenType.CloseBrace) && !IsAtEndOfFile())
+            {
+                var statement = ParseStatement();
+                if (statement != null)
+                {
+                    thenBranch.Add(statement);
+                }
+                else
+                {
+                    AdvanceToNextLine();
+                }
+            }
+
+            Consume(TokenType.CloseBrace, "Se esperaba '}' al final del bloque 'condition'", "SIN014");
+            Token el = AdvancePeek();
+            List<Stmt> elseBranch = new List<Stmt>();
+            if (el.Type == TokenType.Keyword && (el.Value == "otherwise"))
+            {
+                Advance();  // Consume el operador
+                Consume(TokenType.OpenBrace, "Se esperaba '{' después del otherwise", "SIN013");
+                while (!Check(TokenType.CloseBrace) && !IsAtEndOfFile())
+                {
+                    var statement = ParseStatement();
+                    if (statement != null)
+                    {
+                        elseBranch.Add(statement);
+                    }
+                    else
+                    {
+                        AdvanceToNextLine();
+                    }
+                }
+                Consume(TokenType.CloseBrace, "Se esperaba '}' al final del bloque 'condition'", "SIN014");
+            }
+
+            return new IfStatement(condition, thenBranch, elseBranch, _currentLine); // Retorna el if statement
         }
 
         private VarDeclaration ParseVarDeclaration(bool constant)

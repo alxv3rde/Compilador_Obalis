@@ -102,15 +102,13 @@ namespace Compilador_AAA.Views
                     string concatenatedString = string.Join("\n", _print); // Usar "\n" como delimitador
 
                     // Mostrar el resultado en un MessageBox
-                    MessageBox.Show(concatenatedString, "Resultados");
+                    TranslatedEditor.Text= concatenatedString;
                 }
-                
-                TranslatedEditor.Text = "SI Traduce";
 
             }
             else
             {
-                TranslatedEditor.Text = "NO Traduce";
+                TranslatedEditor.Text = "";
             }
             
             

@@ -58,7 +58,7 @@ namespace Compilador_AAA.Traductor
         { TokenType.Private, @"\bprivate\b" },
         { TokenType.Protected, @"\bprotected\b" },
         { TokenType.Internal, @"\binternal\b" },
-        { TokenType.Keyword, @"\b(integer|condition|for|repeat|return|string|char|double|boolean|routine|func|imp)\b" },
+        { TokenType.Keyword, @"\b(int|condition|for|loop|return|string|char|double|bool|routine|func|imp|otherwise)\b" },
         { TokenType.DoubleLiteral,  @"(?<!\w)(\.\d+|\d+\.\d+(\.\d+)*)(e[+-]?\d+)?(?!\w)" },
         { TokenType.IntegerLiteral, @"(?<!\w)\d+(?!\w)" },
         { TokenType.BooleanLiteral, @"\b(true|false)\b" },
@@ -122,6 +122,7 @@ namespace Compilador_AAA.Traductor
                         if (token.Type == TokenType.DoubleLiteral && token.Value.Count(c => c == '.') > 1)
                         {
                             TranslatorView.HandleError($"Número mal formateado en la posición {_position}: '{token.Value}'", token.EndLine, "LEX002");
+                            break;
                         }
 
                         currentTokens.Add(token);

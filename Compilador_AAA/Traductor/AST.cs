@@ -160,6 +160,23 @@ namespace Compilador_AAA.Traductor
             visitor.Visit(this);
         }
     }
+    public class WhileStatement : Stmt
+    {
+        public Expr Condition { get; set; }
+        public List<Stmt> ThenBranch { get; set; }
+
+        public WhileStatement(Expr condition, List<Stmt> thenBranch, int startLine)
+            : base(NodeType.WhileStatement, startLine)
+        {
+            Condition = condition;
+            ThenBranch = thenBranch;
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+    }
     public class FunctionDeclaration : Stmt
     {
         public List<Stmt> Parameters { get; set; }
